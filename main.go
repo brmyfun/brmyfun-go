@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-	fmt.Println("start brmyfun...")
 	fmt.Println(config.Conf.Server)
 
 	r := gin.Default()
