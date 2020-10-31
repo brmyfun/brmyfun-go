@@ -22,12 +22,20 @@ type Config struct {
 	AppMode string `ini:"app_mode"`
 
 	Server ServerConfig `ini:"server"`
+	Auth   AuthConfig   `ini:"auth"`
 	MySQL  MySQLConfig  `ini:"mysql"`
 }
 
 // ServerConfig 服务器配置
 type ServerConfig struct {
 	Port string `ini:"port"`
+}
+
+// AuthConfig 鉴权配置
+type AuthConfig struct {
+	Realm       string `ini:"realm"`
+	Key         string `ini:"key"`
+	IdentityKey string `ini:"identity_key"`
 }
 
 // MySQLConfig MySql配置
