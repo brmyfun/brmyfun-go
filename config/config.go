@@ -51,6 +51,8 @@ func init() {
 	initConfig()
 	initMySQL()
 	initTable()
+
+	initCron()
 }
 
 func initConfig() {
@@ -80,4 +82,8 @@ func initMySQL() {
 
 func initTable() {
 	Db.AutoMigrate(&model.User{})
+}
+
+func initCron() {
+
 }
