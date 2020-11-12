@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/brmyfun/brmy-go/model"
+	"github.com/go-redis/redis/v8"
 	"gopkg.in/ini.v1"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -16,14 +17,17 @@ var Conf *Config
 // Db 全局数据库连接
 var Db *gorm.DB
 
+// Rdb 全局Redis连接
+var Rdb *redis.Client
+
 // Config 配置
 type Config struct {
-	AppName string `ini:"app_name"`
-	AppMode string `ini:"app_mode"`
-
-	Server ServerConfig `ini:"server"`
-	Auth   AuthConfig   `ini:"auth"`
-	MySQL  MySQLConfig  `ini:"mysql"`
+	AppName string       `ini:"app_name"`
+	AppMode string       `ini:"app_mode"`
+	Server  ServerConfig `ini:"server"`
+	Auth    AuthConfig   `ini:"auth"`
+	MySQL   MySQLConfig  `ini:"mysql"`
+	Redis   RedisConfig  `ini:"redis"`
 }
 
 // ServerConfig 服务器配置
@@ -47,25 +51,29 @@ type MySQLConfig struct {
 	Database string `ini:"database"`
 }
 
+// RedisConfig Redis配置
+type RedisConfig struct {
+	Host     string `ini:"host"`
+	Port     string `ini:"port"`
+	Password string `ini:"password"`
+	Database int    `ini:"database"`
+}
+
 func init() {
 	initConfig()
 	initMySQL()
 	initTable()
-
+	initRedis()
 	initCron()
 }
 
 func initConfig() {
 	cfg, err := ini.Load("./config.ini")
-
 	if err != nil {
 		log.Panic("配置文件加载错误!")
 	}
-
 	Conf = &Config{}
-
 	err = cfg.MapTo(Conf)
-
 	if err != nil {
 		log.Panic("配置文件解析错误!")
 	}
@@ -82,6 +90,15 @@ func initMySQL() {
 
 func initTable() {
 	Db.AutoMigrate(&model.User{})
+}
+
+func initRedis() {
+	addr := fmt.Sprintf("%s:%s", Conf.Redis.Host, Conf.Redis.Port)
+	Rdb = redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: "",
+		DB:       Conf.Redis.Database,
+	})
 }
 
 func initCron() {

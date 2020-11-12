@@ -19,6 +19,8 @@ go get -u github.com/axgle/mahonia
 
 go get -u github.com/robfig/cron/v3
 
+go get -u github.com/go-redis/redis/v8
+
 ```
 
 ## git 使用方法
