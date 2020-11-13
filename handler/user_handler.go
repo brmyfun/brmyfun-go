@@ -1,55 +1,28 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
-	"time"
 
 	"github.com/brmyfun/brmy-go/config"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/brmyfun/brmy-go/model"
-	"github.com/brmyfun/brmy-go/service"
-	"github.com/go-redis/redis/v8"
 
 	"github.com/brmyfun/brmy-go/form"
 	"github.com/brmyfun/brmy-go/util"
 	"github.com/gin-gonic/gin"
+
+	"gorm.io/gorm"
 )
 
-// VerificationCodeHandler 验证码处理器
-func VerificationCodeHandler(c *gin.Context) {
-	telephone := c.PostForm("telephone")
-	if !util.VerifyTelephone(telephone) {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    0,
-			"message": "手机号格式有误",
-			"data":    nil,
-		})
-	}
-	// 先从缓存中获取验证码
-	vc, err := service.RedisGet(telephone)
-	if err == redis.Nil {
-		// 缓存中没有则生成一个新的验证码
-		vc = util.GenRandomNumCode(6)
-		// 存入缓存
-		_, err := service.RedisSet(telephone, vc, time.Minute)
-		if err != nil {
-			// 这个错误需要处理一下
-			panic(err)
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"code":    1,
-			"message": "验证码获取成功",
-			"data":    vc,
-		})
-	} else if err != nil {
-		// 这个是未知错误
-		panic(err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":    0,
-		"message": "验证码已发送",
-		"data":    nil,
+// HelloHandler 测试处理器
+func HelloHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	identityKey := config.Conf.Auth.IdentityKey
+	c.JSON(200, gin.H{
+		"username": claims[identityKey],
+		"text":     "Hello World.",
 	})
 }
 
@@ -57,35 +30,49 @@ func VerificationCodeHandler(c *gin.Context) {
 func RegisterHandler(c *gin.Context) {
 	var registerForm form.RegisterDefault
 	if err := c.ShouldBind(&registerForm); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    0,
-			"message": "注册信息不能为空",
-			"data":    nil,
-		})
+		c.JSON(http.StatusOK, Err("注册信息不能为空"))
+		return
+	}
+	// 判断验证码是否正确
+
+	var registerUser model.User
+	err := config.Db.Where("username = ? or email = ?", registerForm.Username, registerForm.Email).First(&registerUser).Error
+	if err == nil {
+		c.JSON(http.StatusOK, Err("用户已存在"))
+		return
+	}
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusOK, Err("未知错误"))
+			return
+		}
+	}
+	// 初始化registerUser
+	registerUser = model.User{
+		Username: registerForm.Username,
+		Password: util.Md5Encode(registerForm.Password),
+		Email:    registerForm.Email,
 	}
 }
 
-// LoginHandler 登录处理器
-func LoginHandler(c *gin.Context) (interface{}, error) {
-	var loginForm form.LoginDefault
-	if err := c.ShouldBind(&loginForm); err != nil {
-		return "", jwt.ErrMissingLoginValues
-	}
-	username := loginForm.Username
-	password := loginForm.Password
-	ok, err := loginPrecheck(username, password)
-	if ok {
-		return &model.User{
-			Username: username,
-		}, nil
-	}
-	return nil, err
-}
-
-// loginPrecheck 登录预检查
-func loginPrecheck(username string, password string) (bool, error) {
+// LoginPrecheck 登录预检查
+func LoginPrecheck(username string, password string) (bool, error) {
 	// 先查询是否存在登录用户
 	var loginUser model.User
-	config.Db.Where("username = ? or telephone = ? or email = ?", username, username, username).First(&loginUser)
+	err := config.Db.Where("username = ? or telephone = ? or email = ?", username, username, username).First(&loginUser).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, errors.New("用户不存在")
+		}
+		return false, errors.New("查询出错")
+	}
+	if !CheckPwd(password, loginUser.Password) {
+		return false, errors.New("用户名或密码错误")
+	}
 	return true, nil
+}
+
+// CheckPwd 验证密码
+func CheckPwd(password, dbPassword string) bool {
+	return util.Md5Encode(password) == dbPassword
 }

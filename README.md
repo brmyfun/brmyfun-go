@@ -21,6 +21,10 @@ go get -u github.com/robfig/cron/v3
 
 go get -u github.com/go-redis/redis/v8
 
+go get -u github.com/matcornic/hermes/v2
+
+go get -u gopkg.in/mail.v2
+
 ```
 
 ## git 使用方法

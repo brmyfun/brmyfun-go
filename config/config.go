@@ -28,6 +28,7 @@ type Config struct {
 	Auth    AuthConfig   `ini:"auth"`
 	MySQL   MySQLConfig  `ini:"mysql"`
 	Redis   RedisConfig  `ini:"redis"`
+	Email   EmailConfig  `ini:"email"`
 }
 
 // ServerConfig 服务器配置
@@ -57,6 +58,16 @@ type RedisConfig struct {
 	Port     string `ini:"port"`
 	Password string `ini:"password"`
 	Database int    `ini:"database"`
+}
+
+// EmailConfig email配置
+type EmailConfig struct {
+	Server         string `ini:"server"`
+	Port           int    `ini:"port"`
+	SenderEmail    string `ini:"sender_email"`
+	SenderIdentity string `ini:"sender_identity"`
+	SMTPUser       string `ini:"smpt_user"`
+	SMTPPassword   string `ini:"smpt_password"`
 }
 
 func init() {
