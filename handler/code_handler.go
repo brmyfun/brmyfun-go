@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"net/mail"
@@ -121,6 +120,6 @@ func sendEmail(email, code string) error {
 	m.SetBody("text/html", emailBody)
 	fmt.Println(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
 	d := gomail.NewDialer(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	return d.DialAndSend(m)
 }
