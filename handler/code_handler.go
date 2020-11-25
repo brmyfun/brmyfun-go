@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"net/mail"
@@ -83,9 +84,10 @@ func EmailVcHandler(c *gin.Context) {
 func sendEmail(email, code string) error {
 	h := hermes.Hermes{
 		Product: hermes.Product{
-			Name: "白日梦语",
-			Link: "https://brmy.fun",
-			Logo: "https://ftp.bmp.ovh/imgs/2020/11/fffb97d83cf6819b.png",
+			Name:      "白日梦语",
+			Link:      "https://brmy.fun",
+			Logo:      "https://ftp.bmp.ovh/imgs/2020/11/fffb97d83cf6819b.png",
+			Copyright: "Copyright © 2020 brmyfun. All rights reserved.",
 		},
 	}
 	template := hermes.Email{
@@ -99,6 +101,7 @@ func sendEmail(email, code string) error {
 					InviteCode:   code,
 				},
 			},
+			Signature: "Thanks",
 		},
 	}
 	emailBody, err := h.GenerateHTML(template)
@@ -116,6 +119,8 @@ func sendEmail(email, code string) error {
 	m.SetHeader("To", email)
 	m.SetHeader("Subject", "注册验证码")
 	m.SetBody("text/html", emailBody)
+	fmt.Println(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
 	d := gomail.NewDialer(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	return d.DialAndSend(m)
 }

@@ -66,8 +66,8 @@ type EmailConfig struct {
 	Port           int    `ini:"port"`
 	SenderEmail    string `ini:"sender_email"`
 	SenderIdentity string `ini:"sender_identity"`
-	SMTPUser       string `ini:"smpt_user"`
-	SMTPPassword   string `ini:"smpt_password"`
+	SMTPUser       string `ini:"smtp_user"`
+	SMTPPassword   string `ini:"smtp_password"`
 }
 
 func init() {
