@@ -25,11 +25,18 @@ func InitRouter() {
 		log.Fatal("JWT Error:" + err.Error())
 	}
 	// 不需要鉴权的接口
+	// 登录
 	r.POST("/login", authMiddleware.LoginHandler)
+	// 退出登录
+	r.POST("/logout", authMiddleware.LogoutHandler)
+	// 获取邮箱验证码
 	r.POST("/email/code", handler.EmailVcHandler)
+	// 注册
+	r.POST("/sigup", handler.RegisterHandler)
 
 	// 需要鉴权的接口
 	api := r.Group("/api")
+	// 刷新token接口
 	api.GET("/refresh_token", authMiddleware.RefreshHandler)
 	api.Use(authMiddleware.MiddlewareFunc())
 	{

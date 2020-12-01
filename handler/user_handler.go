@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/brmyfun/brmy-go/config"
+	"github.com/brmyfun/brmy-go/service"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/brmyfun/brmy-go/model"
@@ -34,7 +35,10 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 	// 判断验证码是否正确
-
+	if vc, err := service.RedisGet(registerForm.Email); err != nil || vc != registerForm.VerificationCode {
+		c.JSON(http.StatusOK, Err("验证码错误,请重新发送"))
+		return
+	}
 	var registerUser model.User
 	err := config.Db.Where("username = ? or email = ?", registerForm.Username, registerForm.Email).First(&registerUser).Error
 	if err == nil {
@@ -43,7 +47,7 @@ func RegisterHandler(c *gin.Context) {
 	}
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusOK, Err("未知错误"))
+			c.JSON(http.StatusOK, Err("查询出错"))
 			return
 		}
 	}
@@ -53,10 +57,17 @@ func RegisterHandler(c *gin.Context) {
 		Password: util.Md5Encode(registerForm.Password),
 		Email:    registerForm.Email,
 	}
+	// 插入新用户
+	result := config.Db.Create(&registerUser)
+	if result.Error != nil {
+		c.JSON(http.StatusOK, Err("创建用户出错"))
+		return
+	}
+	c.JSON(http.StatusOK, Ok("用户注册成功", registerUser.ID))
 }
 
-// LoginPrecheck 登录预检查
-func LoginPrecheck(username string, password string) (bool, error) {
+// LoginCheck 登录检查
+func LoginCheck(username string, password string) (bool, error) {
 	// 先查询是否存在登录用户
 	var loginUser model.User
 	err := config.Db.Where("username = ? or telephone = ? or email = ?", username, username, username).First(&loginUser).Error

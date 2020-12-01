@@ -7,9 +7,9 @@ import (
 // Ok 操作成功
 func Ok(message string, data interface{}) map[string]interface{} {
 	return gin.H{
-		"code":     1,
-		"messsage": message,
-		"data":     data,
+		"code":    1,
+		"message": message,
+		"data":    data,
 	}
 }
 
