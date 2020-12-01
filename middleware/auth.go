@@ -20,7 +20,7 @@ type Token struct {
 	Expired string `json:"expired"`
 }
 
-// InitAuthMiddleware 初始化鉴权配置
+// InitAuthMiddleware 初始化认证/鉴权配置
 func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 	auth := config.Conf.Auth
 	return jwt.New(&jwt.GinJWTMiddleware{
@@ -28,6 +28,7 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 		Key:         []byte(auth.Key),
 		IdentityKey: auth.IdentityKey,
 		Authenticator: func(c *gin.Context) (interface{}, error) {
+			// 认证
 			var loginForm form.LoginDefault
 			if err := c.ShouldBind(&loginForm); err != nil {
 				return nil, errors.New("用户名或密码不能为空")
@@ -42,8 +43,15 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 			}
 			return nil, err
 		},
+		Authorizator: func(data interface{}, c *gin.Context) bool {
+			// 鉴权
+			return true
+		},
 		LoginResponse: func(c *gin.Context, code int, token string, t time.Time) {
 			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Expired: t.Format(time.RFC3339)}))
+		},
+		LogoutResponse: func(c *gin.Context, code int) {
+			c.JSON(http.StatusOK, handler.Ok("退出成功", nil))
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(http.StatusOK, handler.Err(message))
