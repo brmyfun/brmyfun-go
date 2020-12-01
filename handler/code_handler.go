@@ -116,7 +116,7 @@ func sendEmail(email, code string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", from.String())
 	m.SetHeader("To", email)
-	m.SetHeader("Subject", "注册验证码")
+	m.SetHeader("Subject", "欢迎加入白日梦语")
 	m.SetBody("text/html", emailBody)
 	fmt.Println(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
 	d := gomail.NewDialer(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
