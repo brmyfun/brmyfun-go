@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 // Token 封装令牌
 type Token struct {
 	Token   string `json:"token"`
+	Cookie  string `json:"cookie"`
 	Expired string `json:"expired"`
 }
 
@@ -27,6 +29,8 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       auth.Realm,
 		Key:         []byte(auth.Key),
+		Timeout:     time.Hour,
+		MaxRefresh:  time.Hour * 24,
 		IdentityKey: auth.IdentityKey,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*model.User); ok {
@@ -57,7 +61,18 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return true
 		},
 		LoginResponse: func(c *gin.Context, code int, token string, t time.Time) {
-			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Expired: t.Format(time.RFC3339)}))
+			cookie, err := c.Cookie("jwt")
+			if err != nil {
+				log.Println(err)
+			}
+			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Cookie: cookie, Expired: t.Format(time.RFC3339)}))
+		},
+		RefreshResponse: func(c *gin.Context, code int, token string, t time.Time) {
+			cookie, err := c.Cookie("jwt")
+			if err != nil {
+				log.Println(err)
+			}
+			c.JSON(http.StatusOK, handler.Ok("刷新成功", Token{Token: token, Cookie: cookie, Expired: t.Format(time.RFC3339)}))
 		},
 		LogoutResponse: func(c *gin.Context, code int) {
 			c.JSON(http.StatusOK, handler.Ok("退出成功", nil))
