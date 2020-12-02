@@ -22,11 +22,20 @@ type Token struct {
 
 // InitAuthMiddleware 初始化认证/鉴权配置
 func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
+	// 获取配置文件中的 认证/鉴权 配置
 	auth := config.Conf.Auth
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       auth.Realm,
 		Key:         []byte(auth.Key),
 		IdentityKey: auth.IdentityKey,
+		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			if v, ok := data.(*model.User); ok {
+				return jwt.MapClaims{
+					auth.IdentityKey: v.Username,
+				}
+			}
+			return jwt.MapClaims{}
+		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			// 认证
 			var loginForm form.LoginDefault
@@ -58,6 +67,9 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 		},
 		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
+		SendCookie:    true,
+		CookieName:    "jwt",
+		CookieDomain:  "brmy.fun",
 		TimeFunc:      time.Now,
 	})
 }

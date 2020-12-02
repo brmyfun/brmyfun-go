@@ -40,7 +40,7 @@ func InitRouter() {
 	api.GET("/refresh_token", authMiddleware.RefreshHandler)
 	api.Use(authMiddleware.MiddlewareFunc())
 	{
-		api.GET("/hello", handler.HelloHandler)
+		api.GET("/user", handler.UserInfoHandler)
 	}
 
 	if err := r.Run(); err != nil {

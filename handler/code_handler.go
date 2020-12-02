@@ -92,11 +92,11 @@ func sendEmail(email, code string) error {
 	template := hermes.Email{
 		Body: hermes.Body{
 			Intros: []string{
-				"终于等到你啦！感谢你注册白日梦语账号。",
+				"终于等到你啦！欢迎你加入白日梦语。",
 			},
 			Actions: []hermes.Action{
 				{
-					Instructions: "这是你的注册验证码：",
+					Instructions: "这是你的验证码：",
 					InviteCode:   code,
 				},
 			},
@@ -120,6 +120,5 @@ func sendEmail(email, code string) error {
 	m.SetBody("text/html", emailBody)
 	fmt.Println(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
 	d := gomail.NewDialer(config.Conf.Email.Server, config.Conf.Email.Port, config.Conf.Email.SMTPUser, config.Conf.Email.SMTPPassword)
-	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	return d.DialAndSend(m)
 }

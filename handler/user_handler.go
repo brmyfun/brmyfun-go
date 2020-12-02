@@ -17,14 +17,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// HelloHandler 测试处理器
-func HelloHandler(c *gin.Context) {
+// UserInfoHandler 用户信息处理器
+func UserInfoHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	identityKey := config.Conf.Auth.IdentityKey
-	c.JSON(200, gin.H{
-		"username": claims[identityKey],
-		"text":     "Hello World.",
-	})
+	username := claims[identityKey]
+	var user model.User
+	err := config.Db.Where("username = ?", username).First(&user).Error
+	if err == nil {
+		c.JSON(http.StatusOK, Ok("查询成功", user))
+		return
+	}
+	c.JSON(http.StatusOK, Err("查询失败"))
+	return
 }
 
 // RegisterHandler 用户注册处理器
@@ -77,13 +82,13 @@ func LoginCheck(username string, password string) (bool, error) {
 		}
 		return false, errors.New("查询出错")
 	}
-	if !CheckPwd(password, loginUser.Password) {
+	if !checkPwd(password, loginUser.Password) {
 		return false, errors.New("用户名或密码错误")
 	}
 	return true, nil
 }
 
-// CheckPwd 验证密码
-func CheckPwd(password, dbPassword string) bool {
+// checkPwd 验证密码
+func checkPwd(password, dbPassword string) bool {
 	return util.Md5Encode(password) == dbPassword
 }
