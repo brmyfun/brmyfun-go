@@ -38,9 +38,10 @@ type ServerConfig struct {
 
 // AuthConfig 鉴权配置
 type AuthConfig struct {
-	Realm       string `ini:"realm"`
-	Key         string `ini:"key"`
-	IdentityKey string `ini:"identity_key"`
+	Realm        string `ini:"realm"`
+	Key          string `ini:"key"`
+	IdentityKey  string `ini:"identity_key"`
+	CookieDomain string `ini:"cookie_domain"`
 }
 
 // MySQLConfig MySql配置

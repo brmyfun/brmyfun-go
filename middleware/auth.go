@@ -61,14 +61,14 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return true
 		},
 		LoginResponse: func(c *gin.Context, code int, token string, t time.Time) {
-			cookie, err := c.Cookie("jwt")
+			cookie, err := c.Cookie("token")
 			if err != nil {
 				log.Println(err)
 			}
 			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Cookie: cookie, Expired: t.Format(time.RFC3339)}))
 		},
 		RefreshResponse: func(c *gin.Context, code int, token string, t time.Time) {
-			cookie, err := c.Cookie("jwt")
+			cookie, err := c.Cookie("token")
 			if err != nil {
 				log.Println(err)
 			}
@@ -80,11 +80,13 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(http.StatusOK, handler.Err(message))
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
-		TokenHeadName: "Bearer",
-		SendCookie:    true,
-		CookieName:    "jwt",
-		CookieDomain:  "brmy.fun",
-		TimeFunc:      time.Now,
+		TokenLookup:    "header: Authorization, query: token, cookie: token",
+		TokenHeadName:  "Bearer",
+		SendCookie:     true,
+		SecureCookie:   false, // non HTTPS dev environments
+		CookieHTTPOnly: true,  // JS can't modify
+		CookieName:     "token",
+		CookieDomain:   auth.CookieDomain,
+		TimeFunc:       time.Now,
 	})
 }
