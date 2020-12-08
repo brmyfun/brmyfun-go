@@ -17,7 +17,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserInfoHandler 用户信息处理器
+// UserInfoHandler 获取用户信息
 func UserInfoHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	identityKey := config.Conf.Auth.IdentityKey
@@ -32,7 +32,7 @@ func UserInfoHandler(c *gin.Context) {
 	return
 }
 
-// RegisterHandler 用户注册处理器
+// RegisterHandler 用户注册
 func RegisterHandler(c *gin.Context) {
 	var registerForm form.RegisterDefault
 	if err := c.ShouldBind(&registerForm); err != nil {
@@ -71,7 +71,7 @@ func RegisterHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, Ok("用户注册成功", registerUser.ID))
 }
 
-// LoginCheck 登录检查
+// LoginCheck 登录校验
 func LoginCheck(username string, password string) (bool, error) {
 	// 先查询是否存在登录用户
 	var loginUser model.User
@@ -88,7 +88,7 @@ func LoginCheck(username string, password string) (bool, error) {
 	return true, nil
 }
 
-// checkPwd 验证密码
+// checkPwd 密码校验
 func checkPwd(password, dbPassword string) bool {
 	return util.Md5Encode(password) == dbPassword
 }

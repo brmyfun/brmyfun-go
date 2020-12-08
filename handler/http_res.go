@@ -13,7 +13,16 @@ func Ok(message string, data interface{}) map[string]interface{} {
 	}
 }
 
-// Err 操作失败
+// Fail 操作失败
+func Fail(message string, data interface{}) map[string]interface{} {
+	return gin.H{
+		"code":    0,
+		"message": message,
+		"data":    data,
+	}
+}
+
+// Err 操作出错s
 func Err(message string) map[string]interface{} {
 	return gin.H{
 		"code":    0,
