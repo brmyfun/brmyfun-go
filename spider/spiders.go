@@ -3,6 +3,7 @@ package spider
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/brmyfun/brmy-go/util"
 	"github.com/gocolly/colly"
@@ -56,7 +57,7 @@ func ZhihuHotRankV1() {
 	})
 
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total")
@@ -93,7 +94,7 @@ func ToutiaoHotRankV1() {
 	})
 
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("https://i.snssdk.com/hot-event/hot-board/?origin=hot_board")
@@ -122,7 +123,7 @@ func WeiboSearchHotRankV1() {
 
 	// 错误处理
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("https://s.weibo.com/top/summary?cate=realtimehot")
@@ -153,7 +154,7 @@ func WeiboTopicHotRankV1() {
 
 	// 错误处理
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("https://s.weibo.com/top/summary?cate=topicband")
@@ -176,7 +177,7 @@ func BaiduSearchHotRankV1() {
 
 	// 错误处理
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("http://top.baidu.com/buzz?b=1&fr=topindex")
@@ -199,7 +200,7 @@ func BaiduNewWordHotRankV1() {
 
 	// 错误处理
 	c.OnError(func(resp *colly.Response, err error) {
-		fmt.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
+		log.Println("Request URL:", resp.Request.URL, "failed with response:", resp, "\nError:", err)
 	})
 
 	c.Visit("http://top.baidu.com/buzz?b=396&fr=topindex")
