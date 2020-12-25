@@ -1,0 +1,30 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": true,
+            "database": "p",
+            "driver": "MySQL",
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "name": "local_ioc",
+            "port": 13386,
+            "previewLimit": 50,
+            "server": "192.168.1.202",
+            "username": "root"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "59.110.162.146",
+            "port": 13306,
+            "askForPassword": true,
+            "driver": "MySQL",
+            "name": "brmyfun",
+            "username": "root",
+            "database": "brmyfun"
+        }
+    ]
+}

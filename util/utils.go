@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"math/rand"
+	"reflect"
 	"regexp"
 	"strings"
 	"time"
@@ -72,4 +73,13 @@ func Md5Encode(str string) string {
 	m := md5.New()
 	m.Write(d)
 	return hex.EncodeToString(m.Sum(nil))
+}
+
+// IsSlice 判断是否为slcie数据
+func IsSlice(s interface{}) (val reflect.Value, ok bool) {
+	val = reflect.ValueOf(s)
+	if val.Kind() == reflect.Slice {
+		ok = true
+	}
+	return
 }

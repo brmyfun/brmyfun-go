@@ -31,7 +31,7 @@ type Rank struct {
 	ForwardCount  int       `json:"forwardCount" gorm:"type:int;comment:'转发数'"`
 	ViewCount     int       `json:"viewCount" gorm:"type:int;comment:'浏览数'"`
 	Remark        string    `json:"remark" gorm:"type:varchar(256);comment:'备注'"`
-	Date          time.Date `json:"date" gorm:"comment:'日期'"`
+	Date          string    `json:"date" gorm:"type:varchar(32);comment:'日期'"`
 	Rank          int       `json:"rank" gorm:"type:int;comment:'排名'"`
 	CreatedAt     time.Time `json:"createAt"`
 }

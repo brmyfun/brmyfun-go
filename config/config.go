@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/brmyfun/brmy-go/spider"
-
 	"github.com/brmyfun/brmy-go/model"
 	"github.com/go-redis/redis/v8"
 	"github.com/robfig/cron/v3"
@@ -105,6 +103,7 @@ func initMySQL() {
 
 func initTable() {
 	Db.AutoMigrate(&model.User{})
+	Db.AutoMigrate(&model.Rank{})
 }
 
 func initRedis() {
@@ -119,7 +118,7 @@ func initRedis() {
 func initCron() {
 	c := cron.New()
 	c.AddFunc("*/1 * * * *", func() {
-		spider.ZhihuHotRankV1()
+		fmt.Println("cron test")
 	})
 	c.Start()
 }

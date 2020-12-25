@@ -33,6 +33,8 @@ func InitRouter() {
 	r.POST("/email/code", handler.EmailVcHandler)
 	// 注册
 	r.POST("/sigup", handler.RegisterHandler)
+	// 测试爬虫
+	r.GET("/spider", handler.SpiderHandler)
 
 	// 需要鉴权的接口
 	api := r.Group("/api")
