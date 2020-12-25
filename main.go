@@ -1,7 +1,10 @@
 package main
 
-import "github.com/brmyfun/brmy-go/router"
+import (
+	"github.com/brmyfun/brmy-go/spider"
+)
 
 func main() {
-	router.InitRouter()
+	// router.InitRouter()
+	spider.WeiboSearchHotRankV1()
 }
