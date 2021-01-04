@@ -3,6 +3,7 @@ package spider
 import (
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/gocolly/colly"
 )
@@ -23,9 +24,10 @@ func WeiboSearchHotRankV1() {
 		e.ForEach("a", func(_ int, e *colly.HTMLElement) {
 			// url := e.Attr("href")
 			// fmt.Println(url)
-			title := e.ChildText("span:not(em)")
-			// metric := e.ChildText("span em")
-			fmt.Println(title)
+			metric := e.ChildText("span em")
+			titleWithMetric := e.ChildText("span")
+			title := regexp.MustCompile(metric).ReplaceAllString(titleWithMetric, "")
+			fmt.Println(title, "\t", metric)
 		})
 	})
 
