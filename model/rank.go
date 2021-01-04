@@ -23,13 +23,13 @@ type Rank struct {
 	Tags          string    `json:"tags" gorm:"type:varchar(128);comment:'标签'"`
 	Category      string    `json:"category" gorm:"type:varchar(32);comment:'类别'"`
 	Metrics       string    `json:"metrics" gorm:"type:varchar(32);comment:'热度'"`
-	CommentCount  int       `json:"commentCount" gorm:"type:int;comment:'评论数'"`
-	FavoriteCount int       `json:"favoriteCount" gorm:"type:int;comment:'收藏数'"`
-	LikeCount     int       `json:"likeCount" gorm:"type:int;comment:'点赞数'"`
-	AnswerCount   int       `json:"answerCount" gorm:"type:int;comment:'回答数'"`
-	FollowerCount int       `json:"followerCount" gorm:"type:int;comment:'关注数'"`
-	ForwardCount  int       `json:"forwardCount" gorm:"type:int;comment:'转发数'"`
-	ViewCount     int       `json:"viewCount" gorm:"type:int;comment:'浏览数'"`
+	CommentCount  string    `json:"commentCount" gorm:"type:varchar(16);comment:'评论数'"`
+	FavoriteCount string    `json:"favoriteCount" gorm:"type:varchar(16);comment:'收藏数'"`
+	LikeCount     string    `json:"likeCount" gorm:"type:varchar(16);comment:'点赞数'"`
+	AnswerCount   string    `json:"answerCount" gorm:"type:varchar(16);comment:'回答数'"`
+	FollowerCount string    `json:"followerCount" gorm:"type:varchar(16);comment:'关注数'"`
+	ForwardCount  string    `json:"forwardCount" gorm:"type:varchar(16);comment:'转发数'"`
+	ViewCount     string    `json:"viewCount" gorm:"type:varchar(16);comment:'浏览数'"`
 	Remark        string    `json:"remark" gorm:"type:varchar(256);comment:'备注'"`
 	Date          string    `json:"date" gorm:"type:varchar(32);comment:'日期'"`
 	Rank          int       `json:"rank" gorm:"type:int;comment:'排名'"`

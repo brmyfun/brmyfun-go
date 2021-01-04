@@ -17,9 +17,9 @@ type MetaTarget struct {
 	URL           string `json:"url"`
 	Type          string `json:"type"`
 	Created       int64  `json:"created"`
-	AnswerCount   int    `json:"answer_count"`
-	FollowerCount int    `json:"follower_count"`
-	CommentCount  int    `json:"comment_count"`
+	AnswerCount   string `json:"answer_count"`
+	FollowerCount string `json:"follower_count"`
+	CommentCount  string `json:"comment_count"`
 	Excerpt       string `json:"excerpt"`
 }
 
@@ -68,12 +68,12 @@ func ZhihuHotRankV1() []model.Rank {
 				Category:      "",
 				Metrics:       val.DetailText,
 				CommentCount:  val.Target.CommentCount,
-				FavoriteCount: 0,
-				LikeCount:     0,
+				FavoriteCount: "",
+				LikeCount:     "",
 				AnswerCount:   val.Target.AnswerCount,
 				FollowerCount: val.Target.FollowerCount,
-				ForwardCount:  0,
-				ViewCount:     0,
+				ForwardCount:  "",
+				ViewCount:     "",
 				Remark:        "",
 				Date:          time.Now().Format("2006-01-02"),
 				Rank:          key + 1,

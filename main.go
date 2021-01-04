@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/brmyfun/brmy-go/spider"
 )
 
 func main() {
 	// router.InitRouter()
-	spider.WeiboSearchHotRankV1()
+	fmt.Printf("%v", spider.WeiboSearchHotRankV1())
 }
