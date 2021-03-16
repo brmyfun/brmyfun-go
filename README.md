@@ -40,6 +40,13 @@ git push -u origin main
 
 ```
 
+## go mod 常用命令
+
+```shell
+go mod tidy
+
+```
+
 ## spider 爬虫模块
 
 ### 模块介绍
