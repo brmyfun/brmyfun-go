@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/brmyfun/brmy-go/spider"
+	_ "github.com/brmyfun/brmy-go/config"
+	"github.com/brmyfun/brmy-go/router"
 )
 
 func main() {
-	// router.InitRouter()
-	spider.BaiduTodayHotRankV1()
+	router.InitRouter()
+	// spider.BaiduTodayHotRankV1()
 }
