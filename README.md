@@ -43,7 +43,10 @@ git push -u origin main
 ## go mod 常用命令
 
 ```shell
+
+go mod init github.com/brmyfun/brmy-go
 go mod tidy
+go get -u
 
 ```
 
