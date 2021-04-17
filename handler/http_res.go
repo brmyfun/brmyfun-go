@@ -22,7 +22,7 @@ func Fail(message string, data interface{}) map[string]interface{} {
 	}
 }
 
-// Err 操作出错s
+// Err 操作出错
 func Err(message string) map[string]interface{} {
 	return gin.H{
 		"code":    0,
