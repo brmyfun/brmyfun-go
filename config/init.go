@@ -44,7 +44,7 @@ func initRedis() {
 func initCron() {
 	c := cron.New()
 	c.AddFunc("*/1 * * * *", func() {
-		fmt.Println("cron test")
+		log.Println("cron test")
 	})
 	c.Start()
 }

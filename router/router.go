@@ -22,7 +22,7 @@ func InitRouter() {
 	// 加载鉴权中间件
 	authMiddleware, err := middleware.InitAuthMiddleware()
 	if err != nil {
-		log.Fatal("JWT Error:" + err.Error())
+		log.Fatal("JWT init error:" + err.Error())
 	}
 	// 不需要鉴权的接口
 	// 登录

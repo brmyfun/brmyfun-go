@@ -18,7 +18,6 @@ import (
 // Token 封装令牌
 type Token struct {
 	Token   string `json:"token"`
-	Cookie  string `json:"cookie"`
 	Expired string `json:"expired"`
 }
 
@@ -61,26 +60,26 @@ func InitAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return true
 		},
 		LoginResponse: func(c *gin.Context, code int, token string, t time.Time) {
-			cookie, err := c.Cookie("token")
+			_, err := c.Cookie("token")
 			if err != nil {
 				log.Println(err)
 			}
-			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Cookie: cookie, Expired: t.Format(time.RFC3339)}))
+			c.JSON(http.StatusOK, handler.Ok("登录成功", Token{Token: token, Expired: t.Format(time.RFC3339)}))
 		},
 		RefreshResponse: func(c *gin.Context, code int, token string, t time.Time) {
-			cookie, err := c.Cookie("token")
+			_, err := c.Cookie("token")
 			if err != nil {
 				log.Println(err)
 			}
-			c.JSON(http.StatusOK, handler.Ok("刷新成功", Token{Token: token, Cookie: cookie, Expired: t.Format(time.RFC3339)}))
+			c.JSON(http.StatusOK, handler.Ok("刷新成功", Token{Token: token, Expired: t.Format(time.RFC3339)}))
 		},
 		LogoutResponse: func(c *gin.Context, code int) {
 			c.JSON(http.StatusOK, handler.Ok("退出成功", nil))
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(http.StatusOK, handler.Err(message))
+			c.JSON(http.StatusOK, handler.Err("未登录,请先登录"))
 		},
-		TokenLookup:    "header: Authorization, query: token, cookie: token",
+		TokenLookup:    "header: Authorization, cookie: token",
 		TokenHeadName:  "Bearer",
 		SendCookie:     true,
 		SecureCookie:   false, // non HTTPS dev environments
