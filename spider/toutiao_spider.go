@@ -45,7 +45,7 @@ func ToutiaoHotRankV1() []model.Rank {
 				Title:         val.Title,
 				Link:          fmt.Sprint(baseURL, val.Title),
 				Excerpt:       "",
-				Author:        "头条热搜",
+				Author:        "头条热搜榜",
 				Thumbnail:     "",
 				Tags:          "",
 				Category:      "",

@@ -1,1 +1,2 @@
-delete from users;
+select *
+from ranks;
